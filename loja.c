@@ -14,7 +14,6 @@ void inicializar(Conta **lista) {
     *lista = NULL;
 }
 
-// Inserir conta
 void inserir(Conta **lista) {
     Conta *novo = (Conta*) malloc(sizeof(Conta));
 
@@ -41,8 +40,67 @@ void inserir(Conta **lista) {
         }
         aux->prox = novo;
     }
+}
 
-    printf("Conta cadastrada!\n");
+void imprimir(Conta *lista) {
+    Conta *aux = lista;
+
+    while (aux != NULL) {
+        printf("\nID: %d", aux->id);
+        printf("\nNick: %s", aux->nick);
+        printf("\nNivel: %d", aux->nivel);
+        printf("\nPreco: R$ %.2f\n", aux->preco);
+        printf("------------------\n");
+
+        aux = aux->prox;
+    }
+}
+
+void buscar(Conta *lista) {
+    int id;
+    printf("Digite o ID: ");
+    scanf("%d", &id);
+
+    Conta *aux = lista;
+
+    while (aux != NULL) {
+        if (aux->id == id) {
+            printf("Conta encontrada!\n");
+            return;
+        }
+        aux = aux->prox;
+    }
+
+    printf("Conta nao encontrada!\n");
+}
+
+// Remover
+void remover(Conta **lista) {
+    int id;
+    printf("Digite o ID para remover: ");
+    scanf("%d", &id);
+
+    Conta *aux = *lista;
+    Conta *ant = NULL;
+
+    while (aux != NULL && aux->id != id) {
+        ant = aux;
+        aux = aux->prox;
+    }
+
+    if (aux == NULL) {
+        printf("Conta nao encontrada!\n");
+        return;
+    }
+
+    if (ant == NULL) {
+        *lista = aux->prox;
+    } else {
+        ant->prox = aux->prox;
+    }
+
+    free(aux);
+    printf("Conta removida!\n");
 }
 
 int main() {
@@ -51,12 +109,18 @@ int main() {
 
     inicializar(&lista);
 
-    printf("1 - Inserir conta\n");
-    scanf("%d", &opcao);
+    do {
+        printf("\n1 - Inserir\n2 - Imprimir\n3 - Buscar\n4 - Remover\n0 - Sair\n");
+        scanf("%d", &opcao);
 
-    if (opcao == 1) {
-        inserir(&lista);
-    }
+        switch(opcao) {
+            case 1: inserir(&lista); break;
+            case 2: imprimir(lista); break;
+            case 3: buscar(lista); break;
+            case 4: remover(&lista); break;
+        }
+
+    } while(opcao != 0);
 
     return 0;
 }
